@@ -1,6 +1,9 @@
 package color
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const noColor string = "\033[0m"
 
@@ -27,7 +30,7 @@ var colors = map[string]string{
 // Print wraps the fmt.Print function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
 func Print(color string, args ...interface{}) (err error) {
-	colorCode := colors[color]
+	colorCode := colors[strings.ToLower(color)]
 	args = append(append([]interface{}{colorCode}, args...), noColor)
 	fmt.Print(args...)
 	return
@@ -36,7 +39,7 @@ func Print(color string, args ...interface{}) (err error) {
 // Println wraps the fmt.Println function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
 func Println(color string, args ...interface{}) (err error) {
-	colorCode := colors[color]
+	colorCode := colors[strings.ToLower(color)]
 	args = append(append([]interface{}{colorCode}, args...), noColor)
 	fmt.Println(args...)
 	return
@@ -45,7 +48,7 @@ func Println(color string, args ...interface{}) (err error) {
 // Printf wraps the fmt.Printf function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
 func Printf(color, format string, args ...interface{}) (n int, err error) {
-	colorCode := colors[color]
+	colorCode := colors[strings.ToLower(color)]
 	args = append(append([]interface{}{colorCode}, args...), noColor)
 	n, err = fmt.Printf(format, args...)
 	return
