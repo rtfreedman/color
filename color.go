@@ -21,7 +21,7 @@ const (
 	COLORRGB
 )
 
-var rgbMatch *regexp.Regexp = regexp.MustCompile(`\d{6}`)
+var rgbMatch *regexp.Regexp = regexp.MustCompile(`\[0-9a-fA-F]{6}`)
 
 func generateRGBColorCode(color string) (colorCode string, err error) {
 	match := rgbMatch.FindString(color)
