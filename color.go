@@ -52,6 +52,7 @@ func retrieveColorCode(color string) (colorCode string, err error) {
 	} else if COLORMODE == COLOR256 {
 		colorCode, ok = color256Map[strings.ToLower(color)]
 	} else if COLORMODE == COLORRGB {
+		ok = true
 		colorCode, err = generateRGBColorCode(color)
 	} else { // otherwise we won't print a color and we generate an error
 		err = errors.New("COLORMODE improperly set")
