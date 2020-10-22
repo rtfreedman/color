@@ -29,15 +29,15 @@ func generateRGBColorCode(color string) (colorCode string, err error) {
 		err = errors.New("no match found. please supply 6 digit hex code to use COLORRGB color mode")
 		return
 	}
-	r, err := strconv.ParseInt(match[0:2], 16, 8)
+	r, err := strconv.ParseInt(match[0:2], 16, 16)
 	if err != nil {
 		return
 	}
-	g, err := strconv.ParseInt(match[2:4], 16, 8)
+	g, err := strconv.ParseInt(match[2:4], 16, 16)
 	if err != nil {
 		return
 	}
-	b, err := strconv.ParseInt(match[4:6], 16, 8)
+	b, err := strconv.ParseInt(match[4:6], 16, 16)
 	if err != nil {
 		return
 	}
