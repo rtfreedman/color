@@ -63,6 +63,24 @@ func retrieveColorCode(color string) (colorCode string, err error) {
 	return
 }
 
+// Get16BitColorNames returns all the 16 bit color names
+func Get16BitColorNames() []string {
+	colors := []string{}
+	for color := range color16Map {
+		colors = append(colors, color)
+	}
+	return colors
+}
+
+// Get256BitColorNames returns all the 256 bit color names
+func Get256BitColorNames() []string {
+	colors := []string{}
+	for color := range color256Map {
+		colors = append(colors, color)
+	}
+	return colors
+}
+
 // Print wraps the fmt.Print function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
 func Print(color string, args ...interface{}) (n int, err error) {
