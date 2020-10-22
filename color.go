@@ -56,7 +56,7 @@ func retrieveColorCode(color string) (colorCode string, err error) {
 	} else { // otherwise we won't print a color and we generate an error
 		err = errors.New("COLORMODE improperly set")
 	}
-	if !ok && err != nil {
+	if !ok && err == nil {
 		err = errors.New("bad color lookup in color map")
 	}
 	return
