@@ -23,4 +23,4 @@ func main() {
 	color.Println("FF3300", "It works with rgb too!")
 }
 ```
-![output](https://github.com/rtfreedman/color/assets/screengrab.png)
+![output](https://github.com/rtfreedman/color/blob/main/assets/screengrab.png)
