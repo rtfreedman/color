@@ -1,55 +1,73 @@
 package color
 
 import (
+	"errors"
 	"fmt"
-	"strings"
 )
 
 const noColor string = "\033[0m"
 
-var colors = map[string]string{
-	"black":        "\033[0;30m",
-	"dark gray":    "\033[1;30m",
-	"red":          "\033[0;31m",
-	"light red":    "\033[1;31m",
-	"green":        "\033[0;32m",
-	"light green":  "\033[1;32m",
-	"brown":        "\033[1;33m",
-	"orange":       "\033[0;33m",
-	"yellow":       "\033[1;33m",
-	"blue":         "\033[0;34m",
-	"light blue":   "\033[1;34m",
-	"purple":       "\033[0;35m",
-	"light purple": "\033[1;35m",
-	"cyan":         "\033[0;36m",
-	"light cyan":   "\033[1;36m",
-	"light gray":   "\033[0;37m",
-	"white":        "\033[1;37m",
+// COLORMODE is initially set to COLOR16 as the default color mode (supporting the standard 16 colors)
+// COLOR256 and COLORRGB are also available
+var COLORMODE int = COLOR16
+
+// Color modes
+const (
+	COLOR16 = iota
+	COLOR256
+	COLORRGB
+)
+
+func retrieveColorCode(color string) (colorCode string, err error) {
+	var ok bool
+	if COLORMODE == COLOR16 {
+		colorCode, ok = color16Map[color]
+	} else if COLORMODE == COLOR256 {
+		colorCode, ok = color256Map[color]
+	} else { // otherwise we won't print a color and we generate an error
+		err = errors.New("COLORMODE improperly set")
+	}
+	if !ok && err != nil {
+		err = errors.New("bad color lookup in color map")
+	}
+	return
 }
 
 // Print wraps the fmt.Print function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
-func Print(color string, args ...interface{}) (err error) {
-	colorCode := colors[strings.ToLower(color)]
+func Print(color string, args ...interface{}) (n int, err error) {
+	colorCode, err := retrieveColorCode(color)
 	args = append(append([]interface{}{colorCode}, args...), noColor)
-	fmt.Print(args...)
+	n, fmtErr := fmt.Print(args...)
+	// prioritize the fmt errors
+	if fmtErr != nil {
+		err = fmtErr
+	}
 	return
 }
 
 // Println wraps the fmt.Println function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
-func Println(color string, args ...interface{}) (err error) {
-	colorCode := colors[strings.ToLower(color)]
+func Println(color string, args ...interface{}) (n int, err error) {
+	colorCode, err := retrieveColorCode(color)
 	args = append(append([]interface{}{colorCode}, args...), noColor)
-	fmt.Println(args...)
+	n, fmtErr := fmt.Println(args...)
+	// prioritize the fmt errors
+	if fmtErr != nil {
+		err = fmtErr
+	}
 	return
 }
 
 // Printf wraps the fmt.Printf function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
 func Printf(color, format string, args ...interface{}) (n int, err error) {
-	colorCode := colors[strings.ToLower(color)]
+	colorCode, err := retrieveColorCode(color)
 	args = append(append([]interface{}{colorCode}, args...), noColor)
-	n, err = fmt.Printf(format, args...)
+	n, fmtErr := fmt.Printf(format, args...)
+	// prioritize the fmt errors
+	if fmtErr != nil {
+		err = fmtErr
+	}
 	return
 }
