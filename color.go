@@ -3,6 +3,9 @@ package color
 import (
 	"errors"
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 const noColor string = "\033[0m"
@@ -18,12 +21,38 @@ const (
 	COLORRGB
 )
 
+var rgbMatch *regexp.Regexp = regexp.MustCompile(`\d{6}`)
+
+func generateRGBColorCode(color string) (colorCode string, err error) {
+	match := rgbMatch.FindString(color)
+	if match == "" {
+		err = errors.New("no match found. please supply 6 digit hex code to use COLORRGB color mode")
+		return
+	}
+	r, err := strconv.ParseInt(match[0:2], 16, 8)
+	if err != nil {
+		return
+	}
+	g, err := strconv.ParseInt(match[2:4], 16, 8)
+	if err != nil {
+		return
+	}
+	b, err := strconv.ParseInt(match[4:6], 16, 8)
+	if err != nil {
+		return
+	}
+	colorCode = fmt.Sprintf("\x1b[38;2;%d;%d;%dm", r, g, b)
+	return
+}
+
 func retrieveColorCode(color string) (colorCode string, err error) {
 	var ok bool
 	if COLORMODE == COLOR16 {
-		colorCode, ok = color16Map[color]
+		colorCode, ok = color16Map[strings.ToLower(color)]
 	} else if COLORMODE == COLOR256 {
-		colorCode, ok = color256Map[color]
+		colorCode, ok = color256Map[strings.ToLower(color)]
+	} else if COLORMODE == COLORRGB {
+		colorCode, err = generateRGBColorCode(color)
 	} else { // otherwise we won't print a color and we generate an error
 		err = errors.New("COLORMODE improperly set")
 	}
