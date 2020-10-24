@@ -81,6 +81,24 @@ func Get256BitColorNames() []string {
 	return colors
 }
 
+// Sprint wraps the fmt.Sprint function handling color printing to string
+// sprint will omit the error generated from retrieving the color code
+func Sprint(color string, args ...interface{}) (s string) {
+	colorCode, _ := retrieveColorCode(color)
+	args = append(append([]interface{}{colorCode}, args...), noColor)
+	s = fmt.Sprint(args...)
+	return
+}
+
+// Sprintf wraps the fmt.Sprintf function handling color printing to string
+// sprintf will omit the error generated from retrieving the color code
+func Sprintf(color string, format string, args ...interface{}) (s string) {
+	colorCode, _ := retrieveColorCode(color)
+	args = append(append([]interface{}{colorCode}, args...), noColor)
+	s = fmt.Sprintf(format, args...)
+	return
+}
+
 // Print wraps the fmt.Print function handling color printing
 // on error (bad color supplied, etc) the function will still print without color and return an error
 func Print(color string, args ...interface{}) (n int, err error) {
